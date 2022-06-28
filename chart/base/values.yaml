@@ -26,7 +26,7 @@ service:
   port: 8080
 
 submariner:
-  enabled: true
+  enabled: false
 
 route:
   enabled: false
