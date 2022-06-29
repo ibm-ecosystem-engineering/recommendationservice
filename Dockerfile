@@ -12,24 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM quay.io/aminerachyd/python:3.7-slim
+FROM registry.access.redhat.com/ubi8/python-36:1-170.1648121369 as builder
 
-RUN apt-get update -qqy && \
-	apt-get -qqy install g++ && \
-	rm -rf /var/lib/apt/lists/*
-# show python logs as they occur
-ENV PYTHONUNBUFFERED=0
+USER root
+
+RUN ARCH=$(uname -m) && yum install -y https://rpmfind.net/linux/centos/8-stream/PowerTools/$ARCH/os/Packages/libstdc++-static-8.5.0-10.el8.$ARCH.rpm sudo wget make gcc-c++ && yum clean all
+
+WORKDIR /opt/app-root/src
+
+USER default
 
 # get packages
-WORKDIR /recommendationservice
-COPY requirements.txt requirements.txt
+COPY --chown=default:root requirements.txt .
+
 RUN pip install -r requirements.txt
 
-# add files into working directory
-COPY . .
+FROM registry.access.redhat.com/ubi8/python-36:1-170.1648121369
+
+USER default
+
+# Enable unbuffered logging
+ENV PYTHONUNBUFFERED=1
+# Enable Profiler
+ENV ENABLE_PROFILER=1
+
+# Grab packages from builder
+COPY --from=builder /opt/app-root/lib/python3.6/ /opt/app-root/lib/python3.6/
+
+# Add the application
+COPY --chown=default:root . .
 
 # set listen port
 ENV PORT "8080"
+
 EXPOSE 8080
 
-ENTRYPOINT ["python", "/recommendationservice/recommendation_server.py"]
+ENTRYPOINT ["python", "recommendation_server.py"]
