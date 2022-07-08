@@ -22,7 +22,6 @@ from concurrent import futures
 
 from google.auth.exceptions import DefaultCredentialsError
 import grpc
-from opencensus.ext.stackdriver import trace_exporter as stackdriver_exporter
 from opencensus.ext.grpc import server_interceptor
 from opencensus.trace import samplers
 from opencensus.common.transports.async_ import AsyncTransport
@@ -69,44 +68,6 @@ class RecommendationService(demo_pb2_grpc.RecommendationServiceServicer):
 
 if __name__ == "__main__":
     logger.info("initializing recommendationservice")
-
-    try:
-        if "DISABLE_TRACING" in os.environ:
-            raise KeyError()
-        else:
-            logger.info("Tracing enabled.")
-            sampler = samplers.AlwaysOnSampler()
-            exporter = stackdriver_exporter.StackdriverExporter(
-                project_id=os.environ.get("GCP_PROJECT_ID"), transport=AsyncTransport
-            )
-            tracer_interceptor = server_interceptor.OpenCensusServerInterceptor(
-                sampler, exporter
-            )
-    except (KeyError, DefaultCredentialsError):
-        logger.info("Tracing disabled.")
-        tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
-    except Exception as e:
-        logger.warn(
-            f"Exception on Cloud Trace setup: {traceback.format_exc()}, tracing disabled."
-        )
-        tracer_interceptor = server_interceptor.OpenCensusServerInterceptor()
-
-    # try:
-    #   if "DISABLE_DEBUGGER" in os.environ:
-    #     raise KeyError()
-    #   else:
-    #     logger.info("Debugger enabled.")
-    #     try:
-    #       googleclouddebugger.enable(
-    #           module='recommendationserver',
-    #           version='1.0.0'
-    #       )
-    #     except (Exception, DefaultCredentialsError):
-    #         logger.error("Could not enable debugger")
-    #         logger.error(traceback.print_exc())
-    #         pass
-    # except (Exception, DefaultCredentialsError):
-    #     logger.info("Debugger disabled.")
 
     port = os.environ.get("PORT", "8080")
     catalog_addr = os.environ.get("PRODUCT_CATALOG_SERVICE_ADDR", "")
