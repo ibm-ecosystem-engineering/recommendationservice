@@ -16,17 +16,21 @@ FROM registry.access.redhat.com/ubi8/python-36:1-170.1648121369 as builder
 
 USER root
 
-#RUN ARCH=$(uname -m) && yum install -y https://rpmfind.net/linux/centos/8-stream/PowerTools/$ARCH/os/Packages/libstdc++-static-8.5.0-10.el8.$ARCH.rpm sudo gcc-c++ && yum clean all
-RUN ARCH=$(uname -m) && yum install -y make gcc-c++ && yum clean all
+RUN ARCH=$(uname -m) && yum install -y https://rpmfind.net/linux/centos/8-stream/PowerTools/$ARCH/os/Packages/libstdc++-static-8.5.0-10.el8.$ARCH.rpm sudo wget make gcc-c++ && yum clean all
 
 WORKDIR /opt/app-root/src
 
 USER default
 
-# get packages
-COPY --chown=default:root requirements.in .
+#RUN git clone https://github.com/GoogleCloudPlatform/cloud-debug-python.git && \
+#    cd cloud-debug-python/src/ && \
+#    ./build.sh && \
+#    easy_install dist/google_python_cloud_debugger-*.egg
 
-RUN pip install -r requirements.in
+# get packages
+COPY --chown=default:root requirements.txt .
+
+RUN pip install -r requirements.txt
 
 FROM registry.access.redhat.com/ubi8/python-36:1-170.1648121369
 
