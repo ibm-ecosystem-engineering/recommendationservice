@@ -6,7 +6,7 @@
 #
 cachetools==4.2.4
     # via google-auth
-certifi==2020.12.5
+certifi==2022.12.7
     # via requests
 charset-normalizer==2.0.10
     # via requests
@@ -17,32 +17,27 @@ google-api-core[grpc]==1.31.5
     #   google-cloud-core
     #   google-cloud-monitoring
     #   google-cloud-trace
-    #   google-python-cloud-debugger
     #   opencensus
 google-api-python-client==1.12.8
-    # via
-    #   google-cloud-profiler
-    #   google-python-cloud-debugger
+    # via google-cloud-profiler
 google-auth==1.35.0
     # via
     #   google-api-core
     #   google-api-python-client
     #   google-auth-httplib2
     #   google-cloud-profiler
-    #   google-python-cloud-debugger
 google-auth-httplib2==0.0.4
     # via
     #   google-api-python-client
     #   google-cloud-profiler
-    #   google-python-cloud-debugger
 google-cloud-core==1.5.0
     # via google-cloud-trace
 google-cloud-monitoring==0.36.0
     # via opencensus-ext-stackdriver
+google-cloud-profiler==3.0.7
+    # via -r requirements.in
 google-cloud-trace==0.24.0
     # via opencensus-ext-stackdriver
-# google-python-cloud-debugger==2.18
-#     # via -r requirements.in
 googleapis-common-protos==1.52.0
     # via google-api-core
 grpcio==1.33.2
@@ -94,9 +89,7 @@ python-json-logger==0.1.11
 pytz==2018.9
     # via google-api-core
 pyyaml==6.0
-    # via
-    #   -r requirements.in
-    #   google-python-cloud-debugger
+    # via -r requirements.in
 requests==2.27.1
     # via
     #   -r requirements.in
@@ -113,7 +106,6 @@ six==1.15.0
     #   google-auth
     #   google-auth-httplib2
     #   google-cloud-core
-    #   google-python-cloud-debugger
     #   grpcio
     #   protobuf
 uritemplate==3.0.1
